@@ -6,6 +6,7 @@
 - Logging in ([LNURL-auth](lnurl-auth.md))
 - Withdrawing funds ([LNURL-withdraw](lnurl-withdraw.md))
 - Paying for a service ([LNURL-pay](lnurl-pay.md))
+- Pre-paying for a service which value can't be known in advance ([LNURL-prepay](lnurl-prepay.md))
 
 An example `LNURL`:
 > `https://service.com/api?q=3fc3645b439ce8e7f2553a69e5267081d96dcd340693afabe04be7b0ccd178df`
@@ -34,6 +35,27 @@ Once `LNURL` is decoded:
 Neither status codes or any HTTP Header has any meaning. Servers may use whatever they want. Clients should ignore them (and be careful when using libraries that treat responses differently based on headers and status codes) and just parse the response body as JSON, then interpret it accordingly.
 
 ## Decoding examples
+
+In Python:
+```bash
+pip install bech32
+```
+
+```python
+import bech32
+
+bech32_encoded="LNURL1DP68GURN8GHJ7UM9WFMXJCM99E3K7MF0V9CXJ0M385EKVCENXC6R2C35XVUKXEFCV5MKVV34X5EKZD3EV56NYD3HXQURZEPEXEJXXEPNXSCRVWFNV9NXZCN9XQ6XYEFHVGCXXCMYXYMNSERXFQ5FNS"
+(hrp, data)=bech32.bech32_decode(bech32_encoded)
+
+in8bits = bech32.convertbits(data, 5, 8)
+
+print("hrp: ", hrp)           # hrp:  lnurl
+print("data: ", data)         # data:  [13, 1, 26, 7, 8, 28, ...
+print("in8bits: ", in8bits)   # in8bits:  [104, 116, 116, 112, ...
+
+string = "".join([chr(in8bits[i]) for i in range(len(in8bits))])
+print(string)  # https://service.com/api?q=3fc3645b439ce8e7f2553a69e5267081d96dcd340693afabe04be7b0ccd178df
+```
 
 In Scala:
 ```scala
@@ -65,6 +87,7 @@ Buffer.from(requestByteArray).toString()
 2. [LNURL-auth](lnurl-auth.md)
 3. [LNURL-withdraw](lnurl-withdraw.md)
 4. [LNURL-pay](lnurl-pay.md)
+5. [LNURL-prepay](lnurl-prepay.md)
 
 ## Implementations
 
